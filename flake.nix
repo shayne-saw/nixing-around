@@ -21,6 +21,16 @@
         ];
         runScript = ./cassandra-fhs-entrypoint.sh;
       };
+      keycloakFHS = pkgs.buildFHSEnvBubblewrap {
+        name = "keycloak-env";
+        targetPkgs = pkgs: [
+          pkgs.keycloak
+          pkgs.openjdk
+          pkgs.bash
+          pkgs.coreutils
+        ];
+        runScript = ./keycloak-fhs-entrypoint.sh;
+      };
     in {
       devShells.${system}.default = pkgs.mkShell {
         packages = [
@@ -32,6 +42,7 @@
           beam.rebar3
           beam.elixir_1_19
           cassandraFHS
+          keycloakFHS
         ];
 
         shellHook = ''
