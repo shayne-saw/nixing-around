@@ -1,0 +1,29 @@
+# process-compose.yaml
+version: "0.5"
+
+processes:
+  setup:
+    command: bash bin/setup.sh
+  postgres:
+    command: |
+      mkdir -p "$(pwd)/postgres/locks"
+      postgres -D postgres -k "$(pwd)/postgres/locks"
+    depends_on: {setup: {condition: process_completed_successfully}}
+  neo4j:
+    command: neo4j console
+    depends_on: {setup: {condition: process_completed_successfully}}
+  opensearch:
+    command: opensearch
+    depends_on: {setup: {condition: process_completed_successfully}}
+  cassandra:
+    command: |
+      cassandra-env cassandra -f
+    depends_on: {setup: {condition: process_completed_successfully}}
+  keycloak:
+    command: |
+      keycloak-env kc.sh start --optimized \
+      --https-certificate-file=keycloak/ssl/cert.pem \
+      --https-certificate-key-file=keycloak/ssl/key.pem \
+      --https-port=8443 \
+      --hostname=localhost
+    depends_on: {setup: {condition: process_completed_successfully}}

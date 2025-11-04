@@ -26,16 +26,13 @@
         targetPkgs = pkgs: [
           pkgs.keycloak
           pkgs.openjdk
-          pkgs.bash
-          pkgs.coreutils
         ];
         runScript = ./keycloak-fhs-entrypoint.sh;
       };
     in {
       devShells.${system}.default = pkgs.mkShell {
         packages = [
-          pkgs.hello
-          pkgs.fortune
+          pkgs.fish
           pkgs.postgresql
           beam.erlang
           beam.hex
@@ -43,13 +40,18 @@
           beam.elixir_1_19
           cassandraFHS
           keycloakFHS
+          pkgs.process-compose
+          pkgs.neo4j
+          pkgs.opensearch
         ];
 
         shellHook = ''
           export MIX_ARCHIVES=$PWD/.mix/archives
+          export NEO4J_HOME=$PWD/neo4j
+          export OPENSEARCH_PATH_CONF=$PWD/opensearch/config
+          export SHELL=${pkgs.fish}/bin/fish
           mkdir -p $MIX_ARCHIVES
-          echo "Welcome to the development shell!"
-          echo "Available commands: hello, fortune, psql, initdb, postgres"
+          exec ${pkgs.fish}/bin/fish -l
         '';
       };
     };

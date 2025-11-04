@@ -45,5 +45,8 @@ yq -y -i '.cdc_raw_directory = "'"$PWD"'/cassandra/cdc_raw"' cassandra/conf/cass
 export CASSANDRA_CONF="$PWD/cassandra/conf"
 export CASSANDRA_LOG_DIR="$PWD/cassandra/logs"
 
-#Start a shell (or replace with exec cassandra if you want to launch directly)
-exec bash
+if [ $# -eq 0 ]; then
+  exec bash
+else
+  exec "$@"
+fi
