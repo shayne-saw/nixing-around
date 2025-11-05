@@ -33,6 +33,7 @@
       devShells.${system}.default = pkgs.mkShell {
         packages = [
           pkgs.fish
+          pkgs.yq
           pkgs.postgresql
           beam.erlang
           beam.hex
